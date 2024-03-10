@@ -1,0 +1,13 @@
+<html>
+<head>
+<title>Exemplo de script python em HTML</title>
+</head>
+<body>
+<pre>
+import html
+input_string = "# Script para gerar lista M3U com autenticação para um site\n\nimport random\nimport string\n\nclass Canal:\n    def __init__(self, nome, url):\n        self.nome = nome\n        self.url = url\n\nclass Usuario:\n    def __init__(self, usuario, senha):\n        self.usuario = usuario\n        self.senha = senha\n\nclass PainelIPTV:\n    def __init__(self):\n        self.canais = []\n        self.usuarios = []\n\n    def adicionar_canal(self, nome, url):\n        novo_canal = Canal(nome, url)\n        self.canais.append(novo_canal)\n        print(f"Canal '{nome}' adicionado com sucesso!")\n\n    def remover_canal(self, nome):\n        self.canais = [canal for canal in self.canais if canal.nome != nome]\n        print(f"Canal '{nome}' removido com sucesso!")\n\n    def listar_canais(self):\n        print("Lista de Canais:")\n        for canal in self.canais:\n            print(f"{canal.nome} - {canal.url}")\n\n    def criar_usuario(self):\n        usuario = ''.join(random.choices(string.ascii_letters + string.digits, k=8))\n        senha = ''.join(random.choices(string.ascii_letters + string.digits, k=8))\n        novo_usuario = Usuario(usuario, senha)\n        self.usuarios.append(novo_usuario)\n        print(f"Usuário '{usuario}' criado com sucesso!")\n        return usuario, senha\n\n    def gerar_lista_m3u(self):\n        lista_m3u = '#EXTM3U\n'\n        for canal in self.canais:\n            lista_m3u += f'#EXTINF:-1,{canal.nome}\n{canal.url}\n'\n        return lista_m3u\n\n# Exemplo de uso\npainel = PainelIPTV()\npainel.adicionar_canal("Canal 1", "http://url.do.canal1/stream")\npainel.adicionar_canal("Canal 2", "http://url.do.canal2/stream")\nusuario, senha = painel.criar_usuario()\nprint(f"Usuário: {usuario}, Senha: {senha}")\nprint(painel.gerar_lista_m3u())"
+encoded_string = html.escape(input_string)
+print(encoded_string)
+</pre>
+</body>
+</html>
