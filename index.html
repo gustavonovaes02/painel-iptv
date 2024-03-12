@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo do Bicho</title>
+</head>
+<body>
+
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script>
+    // Adicionando o script Python para a lógica do jogo do bicho
+    class Usuario {
+        constructor(nome, senha, saldo) {
+            this.nome = nome;
+            this.senha = senha;
+            this.saldo = saldo;
+        }
+    }
+
+    class JogoDoBicho {
+        constructor(mp_client_id=null, mp_client_secret=null) {
+            this.usuarios = {};
+            this.resultados = {};
+            if (mp_client_id && mp_client_secret) {
+                this.mp = new MercadoPago(mp_client_id, { clientSecret: mp_client_secret });
+            }
+        }
+
+        criar_usuario(nome, senha, saldo_inicial) {
+            if (!(nome in this.usuarios)) {
+                this.usuarios[nome] = new Usuario(nome, senha, saldo_inicial);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        fazer_deposito(nome, valor) {
+            if (nome in this.usuarios && 1 <= valor <= 10000) {
+                this.usuarios[nome].saldo += valor;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        fazer_aposta(nome, numero, valor) {
+            if (nome in this.usuarios && valor <= this.usuarios[nome].saldo) {
+                // Lógica para fazer a aposta
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        retirar_premio_pix(nome, valor) {
+            if (nome in this.usuarios && valor <= this.usuarios[nome].saldo) {
+                // Lógica para retirar o prêmio via PIX
+                this.usuarios[nome].saldo -= valor;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        exibir_resultados() {
+            // Lógica para exibir os resultados de todas as loterias do Brasil
+        }
+
+        controle_jogos() {
+            // Lógica para controle dos jogos
+        }
+
+        fazer_deposito_pix(nome, valor) {
+            if (nome in this.usuarios && 1 <= valor <= 10000) {
+                if (this.mp) {
+                    const preference = {
+                        items: [
+                            {
+                                title: "Depósito no Jogo do Bicho",
+                                quantity: 1,
+                                currency_id: "BRL",
+                                unit_price: valor
+                            }
+                        ]
+                    };
+                    this.mp.createPreference(preference, function(response) {
+                        console.log("Link de pagamento:", response.sandbox_init_point);
+                        // Aqui você pode manipular o link de pagamento, por exemplo, redirecionar o usuário
+                    });
+                    return true;
+                } else {
+                    console.error("Erro: API do Mercado Pago não configurada.");
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+    }
+
+    // Exemplo de uso:
+    const jogo = new JogoDoBicho();
+    jogo.criar_usuario("user1", "senha123", 1000);
+    jogo.fazer_deposito("user1", 5000);
+    jogo.fazer_aposta("user1", "12", 100);
+    jogo.retirar_premio_pix("user1", 500);
+
+    const mp_client_id = "seu_client_id";
+    const mp_client_secret = "seu_client_secret";
+
+    const jogo_com_pix = new JogoDoBicho(mp_client_id, mp_client_secret);
+    jogo_com_pix.criar_usuario("user2", "senha456", 2000);
+    jogo_com_pix.fazer_deposito_pix("user2", 7000);
+</script>
+
+</body>
+  </html>
+  
